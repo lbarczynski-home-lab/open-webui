@@ -1,0 +1,121 @@
+services:
+    openwebui:
+        container_name: openwebui
+        image: ghcr.io/open-webui/open-webui:0.6.25
+        environment:
+            # OpenWebUI configuration
+            - ENABLE_PERSISTENT_CONFIG=false
+            - ENV=prod
+            - YOUTUBE_LOADER_LANGUAGE=en,pl
+            - WEBUI_NAME=XBHL AI
+            - PORT=${VM_PORT:?err}
+            # Upstream services configuration
+            - ENABLE_WEB_SEARCH=True
+            - WEB_SEARCH_RESULT_COUNT=3
+            - WEB_SEARCH_ENGINE=brave
+            - BRAVE_SEARCH_API_KEY=${BRAVE_SEARCH_API_KEY:?err}
+            - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:?err}
+            - OPENAI_API_KEY=${OPENAI_API_KEY:?err}
+            - AUDIO_STT_ENGINE=openai
+            - AUDIO_TTS_ENGINE=openai
+            - AUDIO_TTS_API_KEY=${OPENAI_API_KEY:?err}
+            - AUDIO_TTS_MODEL=gpt-4o-mini-tts
+            - AUDIO_TTS_VOICE=alloy
+            # S3 storage configuration
+            - STORAGE_PROVIDER=s3
+            - S3_ACCESS_KEY_ID=${S3_ACCESS_KEY_ID:?err}
+            - S3_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY:?err}
+            - S3_ENDPOINT_URL=${S3_ENDPOINT_URL:?err}
+            - S3_REGION_NAME=${S3_REGION_NAME:?err}
+            - S3_BUCKET_NAME=${S3_BUCKET_NAME:?err}
+            # SSO configuration
+            - OAUTH_SCOPES=openid email profile
+            - OAUTH_MERGE_ACCOUNTS_BY_EMAIL=true
+            - OAUTH_PROVIDER_NAME=${OAUTH_PROVIDER_NAME:?err}
+            - OAUTH_CLIENT_ID=${OAUTH_CLIENT_ID:?err}
+            - OAUTH_CLIENT_SECRET=${OAUTH_CLIENT_SECRET:?err}
+            - OPENID_PROVIDER_URL=${OPENID_PROVIDER_URL:?err}
+            - OPENID_REDIRECT_URI=https://${OPEN_WEBUI_HOST:?err}/oauth/oidc/callback
+            # DB configuration
+            - VECTOR_DB=chroma
+            - CHROMA_HTTP_HOST=chromadb
+            - CHROMA_HTTP_PORT=8000
+            - DATABASE_URL=postgresql://${DB_POSTGRESDB_USER:?err}:${DB_POSTGRESDB_PASSWORD:?err}@postgresdb:5432/${DB_POSTGRESDB_DATABASE:?err}
+            - REDIS_URL=redis://redis:6379
+        volumes:
+            - data:/app/backend/data
+        ports:
+            - ${VM_PORT:?err}:${VM_PORT:?err}
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.openwebui-router.rule=Host(`${OPEN_WEBUI_HOST:?err}`)"
+            - "traefik.http.routers.openwebui-router.entrypoints=websecure"
+            - "traefik.http.routers.openwebui-router.tls=true"
+            - "traefik.http.routers.openwebui-router.service=openwebui"
+            - "traefik.http.services.openwebui.loadbalancer.server.url=${VM_SCHEMA:?err}://${VM_HOSTNAME:?err}:${VM_PORT:?err}"
+        depends_on:
+            chromadb:
+                condition: service_healthy
+            postgresdb:
+                condition: service_healthy
+            redis:
+                condition: service_healthy
+        restart: unless-stopped
+
+    chromadb:
+        container_name: openwebui_chromadb
+        image: ghcr.io/chroma-core/chroma:latest
+        environment:
+            - IS_PERSISTENT=TRUE
+        volumes:
+            - chromadb:/data
+        healthcheck:
+            test:
+                [
+                    "CMD",
+                    "/bin/bash",
+                    "-c",
+                    "cat < /dev/null > /dev/tcp/localhost/8000",
+                ]
+            start_period: 5s
+            interval: 10s
+            timeout: 10s
+            retries: 3
+        restart: unless-stopped
+
+    postgresdb:
+        container_name: openwebui_postgres
+        image: postgres:latest
+        shm_size: 128mb
+        environment:
+            - POSTGRES_DB=${DB_POSTGRESDB_DATABASE:?err}
+            - POSTGRES_USER=${DB_POSTGRESDB_USER:?err}
+            - POSTGRES_PASSWORD=${DB_POSTGRESDB_PASSWORD:?err}
+        volumes:
+            - postgresdb:/var/lib/postgresql/data
+        healthcheck:
+            test: psql -U ${DB_POSTGRESDB_USER} -d ${DB_POSTGRESDB_DATABASE} -c 'SELECT 1' || exit 1
+            start_period: 5s
+            timeout: 30s
+            interval: 5s
+            retries: 3
+        restart: unless-stopped
+
+    redis:
+        container_name: openwebui_redis
+        image: redis:latest
+        volumes:
+            - redis:/data
+        healthcheck:
+            test: "redis-cli ping"
+            start_period: 5s
+            interval: 5s
+            timeout: 3s
+            retries: 5
+        restart: unless-stopped
+
+volumes:
+    data:
+    postgresdb:
+    chromadb:
+    redis:
