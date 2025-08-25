@@ -18,6 +18,7 @@ services:
             - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:?err}
             - OPENAI_API_KEY=${OPENAI_API_KEY:?err}
             - AUDIO_STT_ENGINE=openai
+            - AUDIO_STT_MODEL=gpt-4o-transcribe
             - AUDIO_TTS_ENGINE=openai
             - AUDIO_TTS_API_KEY=${OPENAI_API_KEY:?err}
             - AUDIO_TTS_MODEL=gpt-4o-mini-tts
