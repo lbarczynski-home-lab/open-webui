@@ -1,7 +1,7 @@
 services:
     openwebui:
         container_name: openwebui
-        image: ghcr.io/open-webui/open-webui:0.6.26
+        image: ghcr.io/open-webui/open-webui:0.6.28
         environment:
             # OpenWebUI configuration
             - ENABLE_PERSISTENT_CONFIG=false
