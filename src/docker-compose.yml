@@ -1,16 +1,16 @@
 services:
     openwebui:
         container_name: openwebui
-        image: ghcr.io/open-webui/open-webui:0.6.32
+        image: ghcr.io/open-webui/open-webui:v${OPEN_WEBUI_VERSION:?err}
         environment:
             # OpenWebUI configuration
             - ENABLE_PERSISTENT_CONFIG=false
             - ENV=prod
             - YOUTUBE_LOADER_LANGUAGE=en,pl
-            - WEBUI_NAME=XBHL AI
-            - PORT=${VM_PORT:?err}
+            - WEBUI_NAME=Chat XBHL
             # Upstream services configuration
             - ENABLE_WEB_SEARCH=True
+            - ENABLE_SEARCH_QUERY_GENERATION=True
             - WEB_SEARCH_RESULT_COUNT=3
             - WEB_LOADER_CONCURRENT_REQUESTS=10
             - WEB_SEARCH_ENGINE=duckduckgo
@@ -51,14 +51,17 @@ services:
         volumes:
             - data:/app/backend/data
         ports:
-            - ${VM_PORT:?err}:${VM_PORT:?err}
+            - ${VM_PORT:?err}:8080
+        networks:
+            - openwebui
+            - proxy
         labels:
             - "traefik.enable=true"
             - "traefik.http.routers.openwebui-router.rule=Host(`${OPEN_WEBUI_HOST:?err}`)"
             - "traefik.http.routers.openwebui-router.entrypoints=websecure"
             - "traefik.http.routers.openwebui-router.tls=true"
             - "traefik.http.routers.openwebui-router.service=openwebui"
-            - "traefik.http.services.openwebui.loadbalancer.server.url=${VM_SCHEMA:?err}://${VM_HOSTNAME:?err}:${VM_PORT:?err}"
+            - "traefik.http.services.openwebui.loadbalancer.server.url=http://openwebui:8080"
         depends_on:
             chromadb:
                 condition: service_healthy
@@ -70,11 +73,13 @@ services:
 
     chromadb:
         container_name: openwebui_chromadb
-        image: ghcr.io/chroma-core/chroma:1.0.20
+        image: chromadb/chroma:${CHROMADB_VERSION:?err}
         environment:
             - IS_PERSISTENT=TRUE
         volumes:
             - chromadb:/data
+        networks:
+            - openwebui
         healthcheck:
             test:
                 [
@@ -91,7 +96,7 @@ services:
 
     postgresdb:
         container_name: openwebui_postgres
-        image: postgres:17.6
+        image: postgres:${POSTGRES_VERSION:?err}
         shm_size: 128mb
         environment:
             - POSTGRES_DB=${DB_POSTGRESDB_DATABASE:?err}
@@ -99,6 +104,8 @@ services:
             - POSTGRES_PASSWORD=${DB_POSTGRESDB_PASSWORD:?err}
         volumes:
             - postgresdb:/var/lib/postgresql/data
+        networks:
+            - openwebui
         healthcheck:
             test: psql -U ${DB_POSTGRESDB_USER} -d ${DB_POSTGRESDB_DATABASE} -c 'SELECT 1' || exit 1
             start_period: 5s
@@ -109,9 +116,11 @@ services:
 
     redis:
         container_name: openwebui_redis
-        image: redis:8.2.1
+        image: redis:${REDIS_VERSION:?err}
         volumes:
             - redis:/data
+        networks:
+            - openwebui
         healthcheck:
             test: "redis-cli ping"
             start_period: 5s
@@ -125,3 +134,9 @@ volumes:
     postgresdb:
     chromadb:
     redis:
+
+networks:
+    openwebui:
+        name: openwebui-internal-network
+    proxy:
+        external: true
