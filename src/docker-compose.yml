@@ -23,6 +23,7 @@ services:
             - DEVICE_TYPE=cpu
             - ENABLE_OLLAMA_API=False
             - ENABLE_API_KEYS=True
+            - JWT_EXPIRES_IN=-1
             # OpenAI compatible backends configuration
             - ENABLE_OPENAI_API=True
             - OPENAI_API_BASE_URLS=https://api.openai.com/v1;https://generativelanguage.googleapis.com/v1beta/openai;https://api.anthropic.com/v1;https://api.x.ai/v1;https://ollama.com/v1
