@@ -45,7 +45,7 @@ services:
             - ENABLE_IMAGE_GENERATION=True
             - IMAGE_GENERATION_ENGINE=openai
             - IMAGE_GENERATION_MODEL=dall-e-3
-            - IMAGE_SIZE=1920x1080
+            - IMAGE_SIZE=1792x1024
             - GEMINI_API_KEY=${GOOGLE_API_KEY:?err}
             - GEMINI_API_BASE_URL=https://generativelanguage.googleapis.com/v1beta
             # S3 storage configuration
