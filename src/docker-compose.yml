@@ -6,14 +6,13 @@ services:
             # OpenWebUI configuration
             - WEBUI_NAME=Chat XBHL
             - WEBUI_URL=https://${OPEN_WEBUI_HOST:?err}
-            - PORT=8080
+            - PORT=${CONTAINER_PORT:?err}
             - ENABLE_SIGNUP=False
             - WEBUI_ADMIN_NAME=${WEBUI_ADMIN_NAME:?err}
             - WEBUI_ADMIN_EMAIL=${WEBUI_ADMIN_EMAIL:?err}
             - WEBUI_ADMIN_PASSWORD=${WEBUI_ADMIN_PASSWORD:?err}
             - DEFAULT_LOCALE=pl
-            - DEFAULT_MODELS=gpt-5.3-chat-latest
-            - DEFAULT_PINNED_MODELS=gpt-5.4,GPT-5.4 mini,GPT-5.4 nano,gpt-5.3-chat-latest,chatgpt-4o-latest
+            - DEFAULT_MODELS=gpt-5.4
             - ENABLE_CHANNELS=False
             - ENABLE_FOLDERS=True
             - ENABLE_NOTES=True
@@ -23,7 +22,6 @@ services:
             - DOCKER=True
             - DEVICE_TYPE=cpu
             - ENABLE_OLLAMA_API=False
-
             # OpenAI compatible backends configuration
             - ENABLE_OPENAI_API=True
             - OPENAI_API_BASE_URLS=https://api.openai.com/v1;https://generativelanguage.googleapis.com/v1beta/openai;https://api.anthropic.com/v1;https://api.x.ai/v1;https://ollama.com/v1
@@ -40,15 +38,14 @@ services:
             # - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:?err}
             # - OPENAI_API_KEY=${OPENAI_API_KEY:?err}
             - AUDIO_STT_ENGINE=openai
-            - AUDIO_STT_MODEL=gpt-4o-transcribe
+            - AUDIO_STT_MODEL=whisper-1
             - AUDIO_TTS_ENGINE=openai
-            - AUDIO_TTS_API_KEY=${OPENAI_API_KEY:?err}
             - AUDIO_TTS_MODEL=gpt-4o-mini-tts
             - AUDIO_TTS_VOICE=alloy
             - ENABLE_IMAGE_GENERATION=True
-            - IMAGE_GENERATION_ENGINE=openai
-            - GOOGLE_API_KEY=${GOOGLE_API_KEY:?err}
-            - GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT:?err}
+            - IMAGE_GENERATION_ENGINE=gemini
+            - IMAGE_SIZE=auto
+            - GEMINI_API_KEY=${GOOGLE_API_KEY:?err}
             # S3 storage configuration
             - STORAGE_PROVIDER=s3
             - S3_ACCESS_KEY_ID=${S3_ACCESS_KEY_ID:?err}
