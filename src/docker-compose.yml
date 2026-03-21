@@ -8,9 +8,9 @@ services:
             - WEBUI_URL=https://${OPEN_WEBUI_HOST:?err}
             - PORT=8080
             - ENABLE_SIGNUP=False
-            - WEBUI_ADMIN_EMAIL=${WEBUI_ADMIN_EMAIL}
-            - WEBUI_ADMIN_PASSWORD=${WEBUI_ADMIN_PASSWORD}
-            - WEBUI_ADMIN_NAME=${WEBUI_ADMIN_NAME}
+            - WEBUI_ADMIN_NAME=${WEBUI_ADMIN_NAME:?err}
+            - WEBUI_ADMIN_EMAIL=${WEBUI_ADMIN_EMAIL:?err}
+            - WEBUI_ADMIN_PASSWORD=${WEBUI_ADMIN_PASSWORD:?err}
             - DEFAULT_LOCALE=pl
             - DEFAULT_MODELS=gpt-5.3-chat-latest
             - DEFAULT_PINNED_MODELS=gpt-5.4,GPT-5.4 mini,GPT-5.4 nano,gpt-5.3-chat-latest,chatgpt-4o-latest
@@ -22,13 +22,12 @@ services:
             - ENABLE_PERSISTENT_CONFIG=False
             - DOCKER=True
             - DEVICE_TYPE=cpu
-            # Ollama.com
-            - ENABLE_OLLAMA_API=True
-            - OLLAMA_BASE_URL=https://ollama.com
-            # OpenAI
+            - ENABLE_OLLAMA_API=False
+
+            # OpenAI compatible backends configuration
             - ENABLE_OPENAI_API=True
-            - OPENAI_API_BASE_URLS=https://api.openai.com/v1;https://generativelanguage.googleapis.com/v1beta/openai;https://api.anthropic.com/v1;https://api.x.ai/v1
-            - OPENAI_API_KEYS=${OPENAI_API_KEY?:err};${GOOGLE_API_KEY?:err};${ANTHROPIC_API_KEY?:err};${GROK_API_KEY?:err}
+            - OPENAI_API_BASE_URLS=https://api.openai.com/v1;https://generativelanguage.googleapis.com/v1beta/openai;https://api.anthropic.com/v1;https://api.x.ai/v1;https://ollama.com/v1
+            - OPENAI_API_KEYS=${OPENAI_API_KEY:?err};${GOOGLE_API_KEY:?err};${ANTHROPIC_API_KEY:?err};${GROK_API_KEY:?err};${OLLAMA_COM_API_KEY:?err}
             # -----
             - YOUTUBE_LOADER_LANGUAGE=en,pl
             # Upstream services configuration
