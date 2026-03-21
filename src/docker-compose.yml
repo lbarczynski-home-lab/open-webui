@@ -4,10 +4,33 @@ services:
         image: ghcr.io/open-webui/open-webui:v${OPEN_WEBUI_VERSION:?err}
         environment:
             # OpenWebUI configuration
-            - ENABLE_PERSISTENT_CONFIG=false
-            - ENV=prod
-            - YOUTUBE_LOADER_LANGUAGE=en,pl
             - WEBUI_NAME=Chat XBHL
+            - WEBUI_URL=https://${OPEN_WEBUI_HOST:?err}
+            - PORT=8080
+            - ENABLE_SIGNUP=False
+            - WEBUI_ADMIN_EMAIL=${WEBUI_ADMIN_EMAIL}
+            - WEBUI_ADMIN_PASSWORD=${WEBUI_ADMIN_PASSWORD}
+            - WEBUI_ADMIN_NAME=${WEBUI_ADMIN_NAME}
+            - DEFAULT_LOCALE=pl
+            - DEFAULT_MODELS=gpt-5.3-chat-latest
+            - DEFAULT_PINNED_MODELS=gpt-5.4,GPT-5.4 mini,GPT-5.4 nano,gpt-5.3-chat-latest,chatgpt-4o-latest
+            - ENABLE_CHANNELS=False
+            - ENABLE_FOLDERS=True
+            - ENABLE_NOTES=True
+            - ENABLE_MEMORIES=True
+            - ENV=prod
+            - ENABLE_PERSISTENT_CONFIG=False
+            - DOCKER=True
+            - DEVICE_TYPE=cpu
+            # Ollama.com
+            - ENABLE_OLLAMA_API=True
+            - OLLAMA_BASE_URL=https://ollama.com
+            # OpenAI
+            - ENABLE_OPENAI_API=True
+            - OPENAI_API_BASE_URLS=https://api.openai.com/v1;https://generativelanguage.googleapis.com/v1beta/openai;https://api.anthropic.com/v1;https://api.x.ai/v1
+            - OPENAI_API_KEYS=${OPENAI_API_KEY?:err};${GOOGLE_API_KEY?:err};${ANTHROPIC_API_KEY?:err};${GROK_API_KEY?:err}
+            # -----
+            - YOUTUBE_LOADER_LANGUAGE=en,pl
             # Upstream services configuration
             - ENABLE_WEB_SEARCH=True
             - ENABLE_SEARCH_QUERY_GENERATION=True
@@ -15,8 +38,8 @@ services:
             - WEB_LOADER_CONCURRENT_REQUESTS=10
             - WEB_SEARCH_ENGINE=duckduckgo
             - BRAVE_SEARCH_API_KEY=${BRAVE_SEARCH_API_KEY:?err}
-            - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:?err}
-            - OPENAI_API_KEY=${OPENAI_API_KEY:?err}
+            # - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:?err}
+            # - OPENAI_API_KEY=${OPENAI_API_KEY:?err}
             - AUDIO_STT_ENGINE=openai
             - AUDIO_STT_MODEL=gpt-4o-transcribe
             - AUDIO_TTS_ENGINE=openai
@@ -51,7 +74,7 @@ services:
         volumes:
             - data:/app/backend/data
         ports:
-            - ${VM_PORT:?err}:8080
+            - ${VM_PORT:?err}:${CONTAINER_PORT:?err}
         networks:
             - openwebui
             - proxy
@@ -61,7 +84,7 @@ services:
             - "traefik.http.routers.openwebui-router.entrypoints=websecure"
             - "traefik.http.routers.openwebui-router.tls=true"
             - "traefik.http.routers.openwebui-router.service=openwebui"
-            - "traefik.http.services.openwebui.loadbalancer.server.url=http://openwebui:8080"
+            - "traefik.http.services.openwebui.loadbalancer.server.url=http://openwebui:${CONTAINER_PORT:?err}"
         depends_on:
             chromadb:
                 condition: service_healthy
