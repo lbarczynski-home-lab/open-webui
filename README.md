@@ -1,5 +1,5 @@
 # Open WebUI
-### v0.8.10
+### v0.9.6
 
 Configuration of my selfhosted [OpenWebUI](https://openwebui.com/) instance.
 
