@@ -8,6 +8,9 @@ services:
             - WEBUI_URL=https://${OPEN_WEBUI_HOST:?err}
             - PORT=${CONTAINER_PORT:?err}
             - ENABLE_SIGNUP=False
+            - ENABLE_LOGIN_FORM=False
+            - ENABLE_PASSWORD_AUTH=False
+            - ENABLE_PASSWORD_CHANGE_FORM=False
             - WEBUI_ADMIN_NAME=${WEBUI_ADMIN_NAME:?err}
             - WEBUI_ADMIN_EMAIL=${WEBUI_ADMIN_EMAIL:?err}
             - WEBUI_ADMIN_PASSWORD=${WEBUI_ADMIN_PASSWORD:?err}
@@ -56,6 +59,7 @@ services:
             - S3_REGION_NAME=${S3_REGION_NAME:?err}
             - S3_BUCKET_NAME=${S3_BUCKET_NAME:?err}
             # SSO configuration
+            - ENABLE_OAUTH_SIGNUP=True
             - OAUTH_SCOPES=openid email profile
             - OAUTH_MERGE_ACCOUNTS_BY_EMAIL=true
             - OAUTH_PROVIDER_NAME=${OAUTH_PROVIDER_NAME:?err}
