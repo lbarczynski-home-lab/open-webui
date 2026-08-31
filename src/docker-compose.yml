@@ -89,6 +89,9 @@ services:
             - "traefik.http.routers.openwebui-router.tls=true"
             - "traefik.http.routers.openwebui-router.service=openwebui"
             - "traefik.http.services.openwebui.loadbalancer.server.url=http://openwebui:${CONTAINER_PORT:?err}"
+            - 'wud.watch=true'
+            - 'wud.tag.include=^v\d+\.\d+\.\d+$$'
+            - "wud.link.template=https://github.com/open-webui/open-webui/releases/tag/v$${major}.$${minor}.$${patch}"
         depends_on:
             chromadb:
                 condition: service_healthy
