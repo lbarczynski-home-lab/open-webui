@@ -91,6 +91,8 @@ services:
             - "traefik.http.services.openwebui.loadbalancer.server.url=http://openwebui:${CONTAINER_PORT:?err}"
             - "traefik.docker.network=proxy"
             - 'wud.watch=true'
+            - 'wud.display.name=Open WebUI'
+            - 'wud.display.icon=thesvg:openwebui'
             - 'wud.tag.include=^v\d+\.\d+\.\d+$$'
             - "wud.link.template=https://github.com/open-webui/open-webui/releases/tag/v$${major}.$${minor}.$${patch}"
         depends_on:
@@ -111,6 +113,12 @@ services:
             - chromadb:/data
         networks:
             - openwebui
+        labels:
+            - 'wud.watch=true'
+            - 'wud.display.name=ChromaDB (Open WebUI)'
+            - 'wud.display.icon=logos:chroma'
+            - 'wud.tag.include=^\d+\.\d+\.\d+$$'
+            - "wud.link.template=https://github.com/chroma-core/chroma/releases/tag/$${major}.$${minor}.$${patch}"
         healthcheck:
             test:
                 [
@@ -137,6 +145,12 @@ services:
             - postgresdb:/var/lib/postgresql/data
         networks:
             - openwebui
+        labels:
+            - 'wud.watch=true'
+            - 'wud.display.name=PostgreSQL (Open WebUI)'
+            - 'wud.display.icon=selfhst:postgresql'
+            - 'wud.tag.include=^17\.\d+$$'
+            - "wud.link.template=https://www.postgresql.org/docs/release/$${major}.$${minor}/"
         healthcheck:
             test: psql -U ${DB_POSTGRESDB_USER} -d ${DB_POSTGRESDB_DATABASE} -c 'SELECT 1' || exit 1
             start_period: 5s
@@ -152,6 +166,12 @@ services:
             - redis:/data
         networks:
             - openwebui
+        labels:
+            - 'wud.watch=true'
+            - 'wud.display.name=Redis (Open WebUI)'
+            - 'wud.display.icon=selfhst:redis'
+            - 'wud.tag.include=^\d+\.\d+\.\d+$$'
+            - "wud.link.template=https://github.com/redis/redis/releases/tag/$${major}.$${minor}.$${patch}"
         healthcheck:
             test: "redis-cli ping"
             start_period: 5s
