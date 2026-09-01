@@ -92,7 +92,7 @@ services:
             - "traefik.docker.network=proxy"
             - 'wud.watch=true'
             - 'wud.display.name=Open WebUI'
-            - 'wud.display.icon=thesvg:openwebui'
+            - 'wud.display.icon=si:openai'
             - 'wud.tag.include=^v\d+\.\d+\.\d+$$'
             - "wud.link.template=https://github.com/open-webui/open-webui/releases/tag/v$${major}.$${minor}.$${patch}"
         depends_on:
@@ -116,7 +116,7 @@ services:
         labels:
             - 'wud.watch=true'
             - 'wud.display.name=ChromaDB (Open WebUI)'
-            - 'wud.display.icon=logos:chroma'
+            - 'wud.display.icon=mdi:database-search'
             - 'wud.tag.include=^\d+\.\d+\.\d+$$'
             - "wud.link.template=https://github.com/chroma-core/chroma/releases/tag/$${major}.$${minor}.$${patch}"
         healthcheck:
@@ -148,7 +148,7 @@ services:
         labels:
             - 'wud.watch=true'
             - 'wud.display.name=PostgreSQL (Open WebUI)'
-            - 'wud.display.icon=selfhst:postgresql'
+            - 'wud.display.icon=si:postgresql'
             - 'wud.tag.include=^17\.\d+$$'
             - "wud.link.template=https://www.postgresql.org/docs/release/$${major}.$${minor}/"
         healthcheck:
@@ -169,7 +169,7 @@ services:
         labels:
             - 'wud.watch=true'
             - 'wud.display.name=Redis (Open WebUI)'
-            - 'wud.display.icon=selfhst:redis'
+            - 'wud.display.icon=si:redis'
             - 'wud.tag.include=^\d+\.\d+\.\d+$$'
             - "wud.link.template=https://github.com/redis/redis/releases/tag/$${major}.$${minor}.$${patch}"
         healthcheck:
