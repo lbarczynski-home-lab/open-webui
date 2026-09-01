@@ -1,5 +1,5 @@
 include:
-    - component: $CI_SERVER_FQDN/home-lab/automations/docker-compose-service-deployment@v1.0.17
+    - component: $CI_SERVER_FQDN/home-lab/automations/docker-compose-service-deployment@v2.0.5
       inputs:
           vm-hostname: infrastructure.vm.xbhl.intranet
           vm-ssh-username: $SSH_USER
@@ -7,6 +7,7 @@ include:
           service-name: openwebui
           container-name: openwebui
           container-location: /opt/containers/openwebui
+          cloudflare-dns-strategy: "direct"
           cloudflare-dns-entry-name: ai.intranet.xbhl.online
           cloudflare-zone-id: $CLOUDFLARE_ZONE_ID
           cloudflare-dns-api-token: $CLOUDFLARE_DNS_API_TOKEN
@@ -16,8 +17,7 @@ include:
 setup:generate-build-artifacts:
     script:
         - cp src/.env $BUILD_ARTIFACTS_DIR
-        - echo "OPEN_WEBUI_HOST=${DNS_RECORD_NAME}" >> $BUILD_ARTIFACTS_DIR/.env
-        - echo "VM_HOSTNAME=${VM_HOST}" >> $BUILD_ARTIFACTS_DIR/.env
+        - echo "OPEN_WEBUI_HOST=${SERVICE_HOSTNAME}" >> $BUILD_ARTIFACTS_DIR/.env
         - echo "WEBUI_ADMIN_NAME=${ADMIN_NAME}" >> $BUILD_ARTIFACTS_DIR/.env
         - echo "WEBUI_ADMIN_EMAIL=${ADMIN_EMAIL}" >> $BUILD_ARTIFACTS_DIR/.env
         - echo "WEBUI_ADMIN_PASSWORD=${ADMIN_PASSWORD}" >> $BUILD_ARTIFACTS_DIR/.env
