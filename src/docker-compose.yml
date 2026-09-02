@@ -1,94 +1,25 @@
 services:
     openwebui:
         container_name: openwebui
-        image: ghcr.io/open-webui/open-webui:v${OPEN_WEBUI_VERSION:?err}
-        environment:
-            # OpenWebUI configuration
-            - WEBUI_NAME=Chat XBHL
-            - WEBUI_URL=https://${OPEN_WEBUI_HOST:?err}
-            - PORT=${CONTAINER_PORT:?err}
-            - ENABLE_SIGNUP=False
-            - ENABLE_LOGIN_FORM=False
-            - ENABLE_PASSWORD_AUTH=False
-            - ENABLE_PASSWORD_CHANGE_FORM=False
-            - WEBUI_ADMIN_NAME=${WEBUI_ADMIN_NAME:?err}
-            - WEBUI_ADMIN_EMAIL=${WEBUI_ADMIN_EMAIL:?err}
-            - WEBUI_ADMIN_PASSWORD=${WEBUI_ADMIN_PASSWORD:?err}
-            - DEFAULT_LOCALE=pl
-            - DEFAULT_MODELS=gpt-5.4
-            - ENABLE_CHANNELS=False
-            - ENABLE_FOLDERS=True
-            - ENABLE_NOTES=True
-            - ENABLE_MEMORIES=True
-            - ENV=prod
-            - ENABLE_PERSISTENT_CONFIG=False
-            - DOCKER=True
-            - DEVICE_TYPE=cpu
-            - ENABLE_OLLAMA_API=False
-            - ENABLE_API_KEYS=True
-            - JWT_EXPIRES_IN=-1
-            # OpenAI compatible backends configuration
-            - ENABLE_OPENAI_API=True
-            - OPENAI_API_BASE_URLS=https://api.openai.com/v1;https://generativelanguage.googleapis.com/v1beta/openai;https://api.anthropic.com/v1;https://api.x.ai/v1;https://ollama.com/v1
-            - OPENAI_API_KEYS=${OPENAI_API_KEY:?err};${GOOGLE_API_KEY:?err};${ANTHROPIC_API_KEY:?err};${GROK_API_KEY:?err};${OLLAMA_COM_API_KEY:?err}
-            # -----
-            - YOUTUBE_LOADER_LANGUAGE=en,pl
-            # Upstream services configuration
-            - ENABLE_WEB_SEARCH=True
-            - ENABLE_SEARCH_QUERY_GENERATION=True
-            - WEB_SEARCH_RESULT_COUNT=3
-            - WEB_LOADER_CONCURRENT_REQUESTS=10
-            - WEB_SEARCH_ENGINE=duckduckgo
-            - BRAVE_SEARCH_API_KEY=${BRAVE_SEARCH_API_KEY:?err}
-            - AUDIO_STT_ENGINE=openai
-            - AUDIO_STT_MODEL=whisper-1
-            - AUDIO_TTS_ENGINE=openai
-            - AUDIO_TTS_MODEL=gpt-4o-mini-tts
-            - AUDIO_TTS_VOICE=alloy
-            - ENABLE_IMAGE_GENERATION=True
-            - IMAGE_GENERATION_ENGINE=openai
-            - IMAGE_GENERATION_MODEL=dall-e-3
-            - IMAGE_SIZE=1792x1024
-            - GEMINI_API_KEY=${GOOGLE_API_KEY:?err}
-            - GEMINI_API_BASE_URL=https://generativelanguage.googleapis.com/v1beta
-            # S3 storage configuration
-            - STORAGE_PROVIDER=s3
-            - S3_ACCESS_KEY_ID=${S3_ACCESS_KEY_ID:?err}
-            - S3_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY:?err}
-            - S3_ENDPOINT_URL=${S3_ENDPOINT_URL:?err}
-            - S3_REGION_NAME=${S3_REGION_NAME:?err}
-            - S3_BUCKET_NAME=${S3_BUCKET_NAME:?err}
-            # SSO configuration
-            - ENABLE_OAUTH_SIGNUP=True
-            - OAUTH_SCOPES=openid email profile
-            - OAUTH_MERGE_ACCOUNTS_BY_EMAIL=true
-            - OAUTH_PROVIDER_NAME=${OAUTH_PROVIDER_NAME:?err}
-            - OAUTH_CLIENT_ID=${OAUTH_CLIENT_ID:?err}
-            - OAUTH_CLIENT_SECRET=${OAUTH_CLIENT_SECRET:?err}
-            - OPENID_PROVIDER_URL=${OPENID_PROVIDER_URL:?err}
-            - OPENID_REDIRECT_URI=https://${OPEN_WEBUI_HOST:?err}/oauth/oidc/callback
-            # DB configuration
-            - VECTOR_DB=chroma
-            - CHROMA_HTTP_HOST=chromadb
-            - CHROMA_HTTP_PORT=8000
-            - DATABASE_URL=postgresql://${DB_POSTGRESDB_USER:?err}:${DB_POSTGRESDB_PASSWORD:?err}@postgresdb:5432/${DB_POSTGRESDB_DATABASE:?err}
-            - REDIS_URL=redis://redis:6379
-            # Local Ollama instance
-            - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:?err}
+        image: ghcr.io/open-webui/open-webui:v0.11.3
+        env_file:
+            - envs/webui.env
+            - envs/auth.env
+            - envs/ai.env
+            - envs/storage.env
+            - envs/db.env
         volumes:
             - data:/app/backend/data
-        ports:
-            - ${VM_PORT:?err}:${CONTAINER_PORT:?err}
         networks:
             - openwebui
             - proxy
         labels:
             - "traefik.enable=true"
-            - "traefik.http.routers.openwebui-router.rule=Host(`${OPEN_WEBUI_HOST:?err}`)"
+            - "traefik.http.routers.openwebui-router.rule=Host(`ai.intranet.xbhl.online`)"
             - "traefik.http.routers.openwebui-router.entrypoints=websecure"
             - "traefik.http.routers.openwebui-router.tls=true"
             - "traefik.http.routers.openwebui-router.service=openwebui"
-            - "traefik.http.services.openwebui.loadbalancer.server.url=http://openwebui:${CONTAINER_PORT:?err}"
+            - "traefik.http.services.openwebui.loadbalancer.server.url=http://openwebui:8080"
             - "traefik.docker.network=proxy"
             - 'wud.watch=true'
             - 'wud.display.name=Open WebUI'
@@ -106,7 +37,7 @@ services:
 
     chromadb:
         container_name: openwebui_chromadb
-        image: chromadb/chroma:${CHROMADB_VERSION:?err}
+        image: chromadb/chroma:1.5.9
         environment:
             - IS_PERSISTENT=TRUE
         volumes:
@@ -135,12 +66,10 @@ services:
 
     postgresdb:
         container_name: openwebui_postgres
-        image: postgres:${POSTGRES_VERSION:?err}
+        image: postgres:17.11
         shm_size: 128mb
-        environment:
-            - POSTGRES_DB=${DB_POSTGRESDB_DATABASE:?err}
-            - POSTGRES_USER=${DB_POSTGRESDB_USER:?err}
-            - POSTGRES_PASSWORD=${DB_POSTGRESDB_PASSWORD:?err}
+        env_file:
+            - envs/postgres.env
         volumes:
             - postgresdb:/var/lib/postgresql/data
         networks:
@@ -152,7 +81,7 @@ services:
             - 'wud.tag.include=^17\.\d+$$'
             - "wud.link.template=https://www.postgresql.org/docs/release/$${major}.$${minor}/"
         healthcheck:
-            test: psql -U ${DB_POSTGRESDB_USER} -d ${DB_POSTGRESDB_DATABASE} -c 'SELECT 1' || exit 1
+            test: psql -U openwebui -d openwebui -c 'SELECT 1' || exit 1
             start_period: 5s
             timeout: 30s
             interval: 5s
@@ -161,7 +90,7 @@ services:
 
     redis:
         container_name: openwebui_redis
-        image: redis:${REDIS_VERSION:?err}
+        image: redis:8.10.1
         volumes:
             - redis:/data
         networks:
