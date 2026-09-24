@@ -1,7 +1,7 @@
 services:
     openwebui:
         container_name: openwebui
-        image: ghcr.io/open-webui/open-webui:v0.11.3
+        image: ghcr.io/open-webui/open-webui:v0.11.4
         env_file:
             - envs/webui.env
             - envs/auth.env
@@ -90,7 +90,7 @@ services:
 
     redis:
         container_name: openwebui_redis
-        image: redis:8.10.1
+        image: redis:8.10.2
         volumes:
             - redis:/data
         networks:
