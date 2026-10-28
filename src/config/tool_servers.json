@@ -11,8 +11,8 @@
       "enable": true
     },
     "info": {
-      "id": "litellm-gateway",
-      "name": "LiteLLM MCP Gateway",
+      "id": "xbhl-mcp-gateway",
+      "name": "XBHL.online MCP Gateway",
       "description": "Unified MCP Gateway (GitLab, Home Assistant)"
     }
   }
