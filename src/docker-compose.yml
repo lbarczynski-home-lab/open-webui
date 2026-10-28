@@ -8,6 +8,7 @@ services:
             - envs/ai.env
             - envs/storage.env
             - envs/db.env
+            - envs/terminal.env
         volumes:
             - data:/app/backend/data
         networks:
@@ -32,6 +33,8 @@ services:
             postgresdb:
                 condition: service_healthy
             redis:
+                condition: service_healthy
+            openterminal:
                 condition: service_healthy
         healthcheck:
             test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
@@ -115,11 +118,35 @@ services:
             retries: 5
         restart: unless-stopped
 
+    openterminal:
+        container_name: openwebui_terminal
+        image: ghcr.io/open-webui/open-terminal:0.14.6
+        env_file:
+            - envs/terminal.env
+        volumes:
+            - openterminal:/home/user
+        networks:
+            - openwebui
+        labels:
+            - 'wud.watch=true'
+            - 'wud.display.name=Open Terminal (Open WebUI)'
+            - 'wud.display.icon=mdi:console'
+            - 'wud.tag.include=^\d+\.\d+\.\d+$$'
+            - "wud.link.template=https://github.com/open-webui/open-terminal/releases/tag/v$${major}.$${minor}.$${patch}"
+        healthcheck:
+            test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+            start_period: 15s
+            interval: 10s
+            timeout: 5s
+            retries: 3
+        restart: unless-stopped
+
 volumes:
     data:
     postgresdb:
     chromadb:
     redis:
+    openterminal:
 
 networks:
     openwebui:
