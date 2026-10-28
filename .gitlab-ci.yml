@@ -25,5 +25,6 @@ setup:generate-build-artifacts:
         # ai api keys (litellm)
         - ': "${XBHL_LITELLM_API_KEY:?XBHL_LITELLM_API_KEY CI/CD variable is not set or empty}"'
         - sed -i "s|^OPENAI_API_KEY=.*|OPENAI_API_KEY=${XBHL_LITELLM_API_KEY}|" $BUILD_ARTIFACTS_DIR/envs/ai.env
+        - sed -i "s|\"key\":\"PLACEHOLDER\"|\"key\":\"${XBHL_LITELLM_API_KEY}\"|" $BUILD_ARTIFACTS_DIR/envs/ai.env
         # s3 storage
         - sed -i "s|^S3_SECRET_ACCESS_KEY=.*|S3_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY}|" $BUILD_ARTIFACTS_DIR/envs/storage.env
