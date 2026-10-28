@@ -15,7 +15,7 @@ services:
             - proxy
         labels:
             - "traefik.enable=true"
-            - "traefik.http.routers.openwebui-router.rule=Host(`ai.intranet.xbhl.online`)"
+            - "traefik.http.routers.openwebui-router.rule=Host(`chat.ai.intranet.xbhl.online`)"
             - "traefik.http.routers.openwebui-router.entrypoints=websecure"
             - "traefik.http.routers.openwebui-router.tls=true"
             - "traefik.http.routers.openwebui-router.service=openwebui"
