@@ -23,6 +23,8 @@ setup:generate-build-artifacts:
         - sed -i "s|^WEBUI_ADMIN_EMAIL=.*|WEBUI_ADMIN_EMAIL=${ADMIN_EMAIL}|" $BUILD_ARTIFACTS_DIR/envs/auth.env
         - sed -i "s|^WEBUI_ADMIN_PASSWORD=.*|WEBUI_ADMIN_PASSWORD=${ADMIN_PASSWORD}|" $BUILD_ARTIFACTS_DIR/envs/auth.env
         - sed -i "s|^OAUTH_CLIENT_SECRET=.*|OAUTH_CLIENT_SECRET=${OPENWEBUI_OAUTH_CLIENT_SECRET}|" $BUILD_ARTIFACTS_DIR/envs/auth.env
+        - ': "${WEBUI_SECRET_KEY:?WEBUI_SECRET_KEY CI/CD variable is not set or empty}"'
+        - sed -i "s|^WEBUI_SECRET_KEY=.*|WEBUI_SECRET_KEY=${WEBUI_SECRET_KEY}|" $BUILD_ARTIFACTS_DIR/envs/auth.env
         # ai api keys (litellm)
         - ': "${XBHL_LITELLM_API_KEY:?XBHL_LITELLM_API_KEY CI/CD variable is not set or empty}"'
         - sed -i "s|^OPENAI_API_KEY=.*|OPENAI_API_KEY=${XBHL_LITELLM_API_KEY}|" $BUILD_ARTIFACTS_DIR/envs/ai.env
