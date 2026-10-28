@@ -11,7 +11,7 @@ include:
           cloudflare-dns-entry-name: chat.ai.intranet.xbhl.online
           cloudflare-zone-id: $CLOUDFLARE_ZONE_ID
           cloudflare-dns-api-token: $CLOUDFLARE_DNS_API_TOKEN
-          container-healthcheck-delay: 60
+          container-healthcheck-delay: 120
           delete-existing-container-files: true
 
 setup:generate-build-artifacts:
