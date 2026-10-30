@@ -5,8 +5,8 @@
     "spec_type": "url",
     "spec": "",
     "path": "",
-    "auth_type": "oauth_2.1",
-    "key": "",
+    "auth_type": "bearer",
+    "key": "PLACEHOLDER",
     "config": {
       "enable": true
     },
