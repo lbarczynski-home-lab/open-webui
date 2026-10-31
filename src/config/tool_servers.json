@@ -1,7 +1,7 @@
 [
   {
     "type": "mcp",
-    "url": "https://llm.ai.intranet.xbhl.online/mcp",
+    "url": "https://gitlab.intranet.xbhl.online/api/v4/mcp",
     "spec_type": "url",
     "spec": "",
     "path": "",
@@ -11,10 +11,26 @@
       "enable": true
     },
     "info": {
-      "id": "xbhl-mcp-gateway",
-      "name": "XBHL.online MCP Gateway",
-      "description": "Unified MCP Gateway (GitLab, Home Assistant)",
-      "oauth_client_info": "OAUTH_CLIENT_INFO_PLACEHOLDER"
+      "id": "gitlab",
+      "name": "GitLab",
+      "description": "GitLab MCP (repositories, merge requests, issues, CI pipelines)"
+    }
+  },
+  {
+    "type": "mcp",
+    "url": "https://ha.intranet.xbhl.online/api/mcp",
+    "spec_type": "url",
+    "spec": "",
+    "path": "",
+    "auth_type": "oauth_2.1",
+    "key": "",
+    "config": {
+      "enable": true
+    },
+    "info": {
+      "id": "home-assistant",
+      "name": "Home Assistant",
+      "description": "Home Assistant MCP (entities, state, devices, services)"
     }
   }
 ]
