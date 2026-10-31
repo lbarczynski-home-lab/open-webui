@@ -5,8 +5,8 @@
     "spec_type": "url",
     "spec": "",
     "path": "",
-    "auth_type": "bearer",
-    "key": "GITLAB_TOKEN_PLACEHOLDER",
+    "auth_type": "oauth_2.1",
+    "key": "",
     "config": {
       "enable": true
     },
@@ -22,8 +22,8 @@
     "spec_type": "url",
     "spec": "",
     "path": "",
-    "auth_type": "bearer",
-    "key": "HOMEASSISTANT_TOKEN_PLACEHOLDER",
+    "auth_type": "oauth_2.1",
+    "key": "",
     "config": {
       "enable": true
     },
