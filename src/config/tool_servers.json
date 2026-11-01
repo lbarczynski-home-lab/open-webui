@@ -32,5 +32,22 @@
       "name": "Home Assistant",
       "description": "Home Assistant MCP (entities, state, devices, services)"
     }
+  },
+  {
+    "type": "mcp",
+    "url": "http://nas.srv.xbhl.intranet:8442/mcp",
+    "spec_type": "url",
+    "spec": "",
+    "path": "",
+    "auth_type": "bearer",
+    "key": "QNAP_TOKEN_PLACEHOLDER",
+    "config": {
+      "enable": true
+    },
+    "info": {
+      "id": "qnap-nas",
+      "name": "QNAP NAS",
+      "description": "QNAP NAS MCP (nas.intranet.xbhl.online): check status and control server via the Assist API"
+    }
   }
 ]
