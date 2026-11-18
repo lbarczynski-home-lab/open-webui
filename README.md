@@ -37,8 +37,8 @@ flowchart LR
 
 - **Delegated LiteLLM Inference**: Open WebUI runs CPU-only with direct Ollama access disabled, routing all chat, speech-to-text, text-to-speech, image generation/editing, and RAG embedding workloads (`xbhl/*` model aliases) through the internal LiteLLM proxy (`https://llm.ai.intranet.xbhl.online/v1`).
 - **Split Persistence, Sandbox & Search**: Relational metadata lives in PostgreSQL 17, vector embeddings in ChromaDB, session/websocket coordination in Redis, user uploads in QNAP NAS S3 object storage (`open-web-ui` bucket), sandboxed execution in Open Terminal (no `open-webui/pipelines` sidecar), and web search in internal SearXNG.
-- **Declarative GitOps & Native OIDC**: Authentication relies exclusively on native Authelia OIDC (`https://auth.xbhl.online`) with local password/signup forms disabled, while `ENABLE_PERSISTENT_CONFIG=False` keeps repository configuration authoritative over UI database settings on startup.
-- **Direct MCP Tool Integrations**: `src/config/tool_servers.json` connects Open WebUI directly to GitLab and Home Assistant MCP servers via per-user OAuth 2.1 (preserving user identity rather than proxying via LiteLLM) and to the QNAP NAS Assist MCP server via shared Bearer auth.
+- **Declarative GitOps & Native OIDC**: Authentication relies exclusively on native Authelia OIDC (`https://auth.xbhl.online`) with local password/signup forms disabled and split-pane Side Chats enabled for OIDC users, while `ENABLE_PERSISTENT_CONFIG=False` keeps repository configuration authoritative over UI database settings on startup.
+- **Direct MCP Tool Integrations**: `src/config/tool_servers.json` connects Open WebUI directly to GitLab and Home Assistant MCP servers via per-user OAuth 2.1 (preserving user identity rather than proxying via LiteLLM) and to the QNAP NAS Assist MCP server via shared Bearer auth, with readable localized tool-call step labels enabled across MCP, Open Terminal, and SearXNG invocations.
 
 ### External Credentials
 
