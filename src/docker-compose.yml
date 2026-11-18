@@ -120,7 +120,7 @@ services:
 
     openterminal:
         container_name: openwebui_terminal
-        image: ghcr.io/open-webui/open-terminal:0.14.6
+        image: ghcr.io/open-webui/open-terminal:0.17.20
         env_file:
             - envs/terminal.env
         volumes:

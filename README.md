@@ -1,6 +1,6 @@
 # Open WebUI
 
-> Version: `v0.13.4` | Images: `ghcr.io/open-webui/open-webui:v0.13.4`, `chromadb/chroma:1.5.9`, `postgres:17.12`, `redis:8.10.3`, `ghcr.io/open-webui/open-terminal:0.14.6` | Upstream: <https://github.com/open-webui/open-webui>
+> Version: `v0.13.4` | Images: `ghcr.io/open-webui/open-webui:v0.13.4`, `chromadb/chroma:1.5.9`, `postgres:17.12`, `redis:8.10.3`, `ghcr.io/open-webui/open-terminal:0.17.20` | Upstream: <https://github.com/open-webui/open-webui>
 
 Self-hosted AI workspace (`Chat XBHL`) providing a unified chat, RAG, sandboxed terminal, and Model Context Protocol (MCP) tool interface backed by internal LiteLLM inference and Authelia SSO.
 
