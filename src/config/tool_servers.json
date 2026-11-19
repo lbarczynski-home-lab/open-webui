@@ -22,8 +22,8 @@
     "spec_type": "url",
     "spec": "",
     "path": "",
-    "auth_type": "oauth_2.1",
-    "key": "",
+    "auth_type": "bearer",
+    "key": "HOMEASSISTANT_TOKEN_PLACEHOLDER",
     "config": {
       "enable": true
     },
